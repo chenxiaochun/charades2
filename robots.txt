@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /search
+
+# 网站地图
+Sitemap: https://how-to-play-charades.com/sitemap.xml
+
+# 爬虫访问频率建议
+Crawl-delay: 10
