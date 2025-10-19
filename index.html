@@ -576,6 +576,8 @@
         </div>
     </div>
 
+    <!-- 音效将通过JavaScript动态创建 -->
+    
     <footer>
         <p>&copy; 2024 如何玩你比我猜游戏 - 专业的Charades在线游戏平台. 保留所有权利.</p>
         <p style="margin-top: 10px; font-size: 0.9rem;">免费提供你比我猜游戏规则、技巧和在线体验，适合家庭聚会、团队建设和朋友娱乐。</p>
@@ -778,14 +780,166 @@
 
         // 跳过按钮功能已移除
         
+        // 音效系统优化 - 使用预加载和缓存减少延迟
+        const soundSystem = {
+            // 缓存音效对象
+            sounds: {},
+            
+            // Web Audio API 上下文
+            audioContext: null,
+            
+            // 初始化
+            init: function() {
+                console.log('初始化音效系统');
+                
+                // 预加载音效
+                this.preloadSounds();
+                
+                // 初始化Web Audio API作为备用
+                try {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) {
+                        this.audioContext = new AudioContext();
+                    }
+                } catch (e) {
+                    console.log('Web Audio API初始化失败:', e);
+                }
+            },
+            
+            // 预加载音效文件到内存
+            preloadSounds: function() {
+                // 正确音效
+                this.sounds.correct = new Audio('https://www.soundjay.com/button/sounds/button-1.mp3');
+                this.sounds.correct.preload = 'auto';
+                this.sounds.correct.load();
+                
+                // 错误音效
+                this.sounds.wrong = new Audio('https://www.soundjay.com/button/sounds/button-2.mp3');
+                this.sounds.wrong.preload = 'auto';
+                this.sounds.wrong.load();
+                
+                console.log('音效预加载完成');
+            },
+            
+            // 播放音效 - 使用缓存的实例
+            play: function(type) {
+                try {
+                    // 1. 首先尝试使用缓存的Audio实例（最快）
+                    const sound = this.sounds[type];
+                    if (sound) {
+                        // 停止并重置当前播放
+                        sound.pause();
+                        sound.currentTime = 0;
+                        
+                        // 播放音效
+                        const playPromise = sound.play();
+                        if (playPromise !== undefined) {
+                            playPromise.then(() => {
+                                console.log(`快速播放${type}音效成功`);
+                            }).catch(error => {
+                                console.log(`缓存音效播放失败，使用备用方法:`, error);
+                                // 如果缓存的音效播放失败，立即使用Web Audio API
+                                this.playWithWebAudio(type);
+                            });
+                            return;
+                        }
+                    }
+                    
+                    // 如果缓存中没有，直接使用Web Audio API
+                    this.playWithWebAudio(type);
+                } catch (e) {
+                    console.error('播放音效异常:', e);
+                }
+            },
+            
+            // 使用Web Audio API播放（几乎无延迟）
+            playWithWebAudio: function(type) {
+                try {
+                    if (!this.audioContext) {
+                        // 延迟创建AudioContext以符合自动播放策略
+                        const AudioContext = window.AudioContext || window.webkitAudioContext;
+                        if (AudioContext) {
+                            this.audioContext = new AudioContext();
+                        } else {
+                            console.log('浏览器不支持Web Audio API');
+                            return;
+                        }
+                    }
+                    
+                    // 如果音频上下文被暂停，恢复它
+                    if (this.audioContext.state === 'suspended') {
+                        this.audioContext.resume();
+                    }
+                    
+                    const oscillator = this.audioContext.createOscillator();
+                    const gainNode = this.audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+                    
+                    // 为不同类型设置音效参数
+                    if (type === 'correct') {
+                        // 愉快的上升音调 - 更快的响应
+                        oscillator.type = 'sine';
+                        oscillator.frequency.setValueAtTime(440, this.audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(880, this.audioContext.currentTime + 0.15);
+                        gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.25);
+                        oscillator.start(this.audioContext.currentTime);
+                        oscillator.stop(this.audioContext.currentTime + 0.25);
+                    } else {
+                        // 错误的下降音调 - 更快的响应
+                        oscillator.type = 'sine';
+                        oscillator.frequency.setValueAtTime(880, this.audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(440, this.audioContext.currentTime + 0.15);
+                        gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.25);
+                        oscillator.start(this.audioContext.currentTime);
+                        oscillator.stop(this.audioContext.currentTime + 0.25);
+                    }
+                    
+                    console.log(`Web Audio API ${type}音效播放成功`);
+                } catch (e) {
+                    console.error('Web Audio API播放失败:', e);
+                }
+            },
+            
+            // 确保音频上下文在用户交互后被激活
+            ensureAudioContextActive: function() {
+                if (this.audioContext && this.audioContext.state === 'suspended') {
+                    this.audioContext.resume();
+                }
+            }
+        };
+        
+        // 简化的音效播放接口
+        function playSound(type) {
+            soundSystem.play(type);
+        }
+        
+        // 在页面加载完成后初始化音效系统
+        window.addEventListener('DOMContentLoaded', function() {
+            // 初始化音效系统
+            soundSystem.init();
+            
+            // 在用户第一次交互时确保音频上下文激活
+            document.addEventListener('click', function activateAudioContext() {
+                soundSystem.ensureAudioContextActive();
+                // 只执行一次
+                document.removeEventListener('click', activateAudioContext);
+            }, { once: true });
+        });
+        
         document.getElementById('correct-btn').addEventListener('click', () => {
             if (isGameRunning) {
+                playSound('correct');
                 recordWordResult(true);
             }
         });
         
         document.getElementById('wrong-btn').addEventListener('click', () => {
             if (isGameRunning) {
+                playSound('wrong');
                 recordWordResult(false);
             }
         });
