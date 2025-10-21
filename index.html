@@ -606,7 +606,7 @@
       </nav>
 
       <!-- How to Play Section - Always visible for SEO -->
-      <section id="how-to-play-section">
+      <section id="how-to-play-section-primary">
         <div class="how-to-play">
           <h2 data-i18n="howToPlay.title">How to Play Charades Game</h2>
           <div class="steps">
@@ -1873,10 +1873,34 @@
         }
 
         function showRules() {
-          document.getElementById("features").style.display = "none";
-          document.getElementById("how-to-play-section").style.display =
-            "block";
-          document.getElementById("game-container").style.display = "none";
+          try {
+            console.log("Show rules function called");
+            // 隐藏不需要显示的部分
+            const featuresElement = document.getElementById("features");
+            if (featuresElement) {
+              featuresElement.style.display = "none";
+            }
+            
+            // 隐藏游戏容器
+            const gameContainerElement = document.getElementById("game-container");
+            if (gameContainerElement) {
+              gameContainerElement.style.display = "none";
+            }
+            
+            // 显示规则部分（使用第788行的正确ID）
+            const rulesElement = document.getElementById("how-to-play-section");
+            if (rulesElement) {
+              rulesElement.style.display = "block";
+              // 滚动到规则部分
+              setTimeout(function() {
+                rulesElement.scrollIntoView({ behavior: "smooth" });
+              }, 100);
+            } else {
+              console.error("How to play section element not found");
+            }
+          } catch (e) {
+            console.error("Error showing rules:", e);
+          }
         }
 
         // 简单直接的play-now按钮点击事件处理
