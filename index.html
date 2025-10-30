@@ -148,7 +148,7 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: "Arial", sans-serif;
+        font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
       }
 
       /* 语言切换按钮样式 */
@@ -168,7 +168,7 @@
         padding: 8px 16px;
         border-radius: 20px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         font-weight: bold;
       }
 
@@ -220,33 +220,66 @@
         background-color: #ff5e62;
         color: white;
         border: none;
-        padding: 12px 30px;
+        padding: 14px 32px;
         font-size: 1.1rem;
         border-radius: 50px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         text-decoration: none;
         display: inline-block;
         font-weight: bold;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(255, 94, 98, 0.2);
+      }
+
+      .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: all 0.6s ease;
       }
 
       .btn:hover {
         background-color: #ff4a4e;
         transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(255, 94, 98, 0.3);
+        box-shadow: 0 12px 24px rgba(255, 94, 98, 0.4);
+      }
+
+      .btn:hover::before {
+        left: 100%;
+      }
+
+      .btn:active {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(255, 94, 98, 0.3);
       }
 
       .btn-secondary {
         background-color: #4ecdc4;
-        border: 2px solid #4ecdc4;
+        border: 2px solid transparent;
         color: white;
         margin-left: 15px;
+        box-shadow: 0 4px 15px rgba(78, 205, 196, 0.2);
+      }
+
+      .btn-secondary::before {
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
       }
 
       .btn-secondary:hover {
         background-color: #3db5ad;
-        border-color: #3db5ad;
-        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 12px 24px rgba(78, 205, 196, 0.4);
+      }
+
+      .btn-secondary:active {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(78, 205, 196, 0.3);
       }
 
       .container {
@@ -274,17 +307,34 @@
       }
 
       .feature-card {
-        background: white;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
         border-radius: 15px;
         padding: 2rem;
         text-align: center;
-        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(255, 255, 255, 0.8) inset;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: all 0.6s ease;
       }
 
       .feature-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        transform: translateY(-12px);
+        box-shadow: 0 20px 35px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(255, 255, 255, 0.8) inset;
+      }
+
+      .feature-card:hover::before {
+        left: 100%;
       }
 
       .feature-icon {
@@ -339,35 +389,116 @@
       }
 
       .game-container {
-        background: white;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
         border-radius: 20px;
         padding: 3rem;
-        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(255, 255, 255, 0.8) inset;
         text-align: center;
         max-width: 600px;
         margin: 0 auto;
         display: none;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .game-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #ff5e62, #4ecdc4);
+        border-radius: 20px 20px 0 0;
+      }
+
+      .game-container.show {
+        animation: fadeInUp 0.6s ease forwards;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
 
       #word-display {
-        font-size: 2.5rem;
+        font-size: 2.8rem;
         font-weight: bold;
         margin: 2rem 0;
         padding: 2rem;
-        background-color: #f8f9fa;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
         border-radius: 15px;
-        min-height: 120px;
+        min-height: 140px;
         display: flex;
         align-items: center;
         justify-content: center;
         letter-spacing: 2px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05), inset 0 1px 3px rgba(255, 255, 255, 0.8);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      #word-display::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(120deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+        pointer-events: none;
+      }
+
+      #word-display:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08), inset 0 1px 3px rgba(255, 255, 255, 0.8);
       }
 
       .timer {
-        font-size: 3rem;
+        font-size: 3.5rem;
         font-weight: bold;
         color: #ff5e62;
         margin-bottom: 2rem;
+        padding: 1rem 2rem;
+        border-radius: 10px;
+        background: linear-gradient(135deg, rgba(255,94,98,0.1), rgba(255,94,98,0.05));
+        transition: all 0.3s ease;
+        position: relative;
+        display: inline-block;
+      }
+
+      .timer.timer-warning {
+        color: #ff9800;
+        animation: pulse 1s infinite;
+      }
+
+      .timer.timer-danger {
+        color: #f44336;
+        animation: pulse 0.5s infinite;
+        transform: scale(1.05);
+      }
+
+      @keyframes timer-pulse {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 0.9;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
       }
 
       @keyframes pulse {
@@ -388,16 +519,53 @@
       .game-controls {
         display: flex;
         justify-content: center;
-        gap: 1rem;
-        margin-top: 2rem;
+        gap: 1.5rem;
+        margin-top: 2.5rem;
+        flex-wrap: wrap;
+      }
+
+      .game-controls .btn {
+        min-width: 130px;
+        font-size: 1.1rem;
       }
 
       .settings {
-        background-color: white;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
         border-radius: 20px;
-        padding: 2rem;
-        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+        padding: 2.5rem;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(255, 255, 255, 0.8) inset;
         margin-bottom: 2rem;
+        transition: all 0.3s ease;
+      }
+
+      .settings:hover {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(255, 255, 255, 0.8) inset;
+      }
+
+      .settings select,
+      .settings input {
+        padding: 12px 16px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        margin: 8px 0;
+        transition: all 0.3s ease;
+        background-color: white;
+      }
+
+      .settings select:focus,
+      .settings input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .settings label {
+        font-weight: bold;
+        color: #2c3e50;
+        margin-right: 10px;
+        display: inline-block;
+        min-width: 120px;
       }
 
       .settings-group {
@@ -1236,7 +1404,19 @@
           .toString()
           .padStart(2, "0");
         const seconds = (timeLeft % 60).toString().padStart(2, "0");
-        document.getElementById("timer").textContent = `${minutes}:${seconds}`;
+        const timerElement = document.getElementById("timer");
+        timerElement.textContent = `${minutes}:${seconds}`;
+        
+        // 根据剩余时间添加视觉效果
+        if (timeLeft <= 10) {
+          timerElement.classList.add('timer-danger');
+          timerElement.classList.remove('timer-warning');
+        } else if (timeLeft <= 20) {
+          timerElement.classList.add('timer-warning');
+          timerElement.classList.remove('timer-danger');
+        } else {
+          timerElement.classList.remove('timer-warning', 'timer-danger');
+        }
       }
 
       // 函数已移至全局作用域
@@ -1847,8 +2027,21 @@
 
         // 跳过当前词汇
         function showNextWord(category, difficulty) {
-          currentWord = getRandomWord(category, difficulty);
-          document.getElementById("word-display").textContent = currentWord;
+          const wordDisplay = document.getElementById("word-display");
+          
+          // 添加淡出动画
+          wordDisplay.style.opacity = "0";
+          wordDisplay.style.transform = "scale(0.95)";
+          
+          // 短暂延迟后更新词汇并添加淡入动画
+          setTimeout(() => {
+            currentWord = getRandomWord(category, difficulty);
+            wordDisplay.textContent = currentWord;
+            
+            // 添加淡入动画
+            wordDisplay.style.opacity = "1";
+            wordDisplay.style.transform = "scale(1)";
+          }, 300);
         }
 
         // 记录你比我猜词汇猜测结果 - 正确或错误
@@ -1911,7 +2104,11 @@
             document.getElementById("features").style.display = "none";
             document.getElementById("how-to-play-section").style.display =
               "none";
-            document.getElementById("game-container").style.display = "block";
+            const gameContainer = document.getElementById("game-container");
+            gameContainer.style.display = "block";
+            // 添加动画类
+            gameContainer.classList.add("show");
+            
             // 尝试滚动到游戏区域
             setTimeout(function () {
               document
